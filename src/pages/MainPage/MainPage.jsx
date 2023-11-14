@@ -1,13 +1,40 @@
+import { useState } from 'react'
 import tracksList from '../../assets/tracksList'
 import style from './mainPage.module.scss'
 import Track from '../../components/Track'
+import { Input } from '@mui/material'
+
+const runSearch = (query) => {
+  if (!query) {
+    return tracksList
+  }
+
+  const lowerCaseQuery = query.toLowerCase()
+
+  return tracksList.filter(
+    (track) =>
+      track.title.toLowerCase().includes(lowerCaseQuery) ||
+      track.artists.toLowerCase().includes(lowerCaseQuery)
+  )
+}
 
 const MainPage = () => {
+  const [tracks, setTracks] = useState(tracksList)
+
+  const handleChange = (event) => {
+    const foundTracks = runSearch(event.target.value)
+    setTracks(foundTracks)
+  }
+
   return (
     <div className={style.search}>
-      <>Пошук пісень</>
+      <Input
+        className={style.input}
+        placeholder="Пошук пісень"
+        onChange={handleChange}
+      />
       <div className={style.list}>
-        {tracksList.map((track) => (
+        {tracks.map((track) => (
           <Track key={track.id} {...track} />
         ))}
       </div>
